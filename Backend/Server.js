@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config();
-const DB = require('./DataBase');
+const DB = require('./DataBase/Index.js'); 
 
 const userRoutes = require('./Routes/UserRoutes');
 const imageRoutes = require('./Routes/ImageRoutes');
@@ -10,6 +10,8 @@ const dashboardRoutes = require("./Routes/DashboardRoutes");
 const bookingRoutes = require('./Routes/BookingRoutes');
 const webhookRoutes = require('./Routes/WebhookRoutes');
 const wishlistRoutes = require('./Routes/WishlistRoutes');
+
+
 
 
 

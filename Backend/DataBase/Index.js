@@ -1,11 +1,13 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+require("dotenv").config();
 
-mongoose.connect('mongodb://localhost:27017/Book-My-Ticket')
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
-    console.log('Mongoose Connected.....');
+    console.log("MongoDB Atlas Connected ");
   })
-  .catch((e) => {
-    console.log(e);
+  .catch((err) => {
+    console.log("Database Error:", err);
   });
 
 module.exports = mongoose;
