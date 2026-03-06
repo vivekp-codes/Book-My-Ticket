@@ -94,6 +94,7 @@ function SideBar() {
         error.response?.data?.message || "Failed To Update Details"
       );
     }
+  }
 
     const handleImageUpload = async (e) => {
       const file = e.target.files[0];
@@ -435,6 +436,7 @@ function SideBar() {
       </>
     );
   }
-}
+
+
 
   export default SideBar;
