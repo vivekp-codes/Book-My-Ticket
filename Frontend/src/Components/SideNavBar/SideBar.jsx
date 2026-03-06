@@ -7,6 +7,8 @@ import { House } from 'lucide-react';
 import { Heart } from "lucide-react";
 import { Wallet } from "lucide-react";
 import { TicketCheck } from "lucide-react";
+import API from "../../API/Api";
+
 
 
 
@@ -25,7 +27,7 @@ function SideBar() {
   const { user, role, logout, setUser } = useAuth();
   const navigate = useNavigate();
 
-  const [open, setOpen] = useState(false); 
+  const [open, setOpen] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [error, setError] = useState("");
@@ -67,38 +69,30 @@ function SideBar() {
     }
 
     try {
-      const response = await fetch("http://localhost:5000/api/user/profile", {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+      const response = await API.patch("/user/profile", {
+        username: formData.username,
+        phone: formData.phone,
+        profilePic: formData.profilePic,
+        address: {
+          state: formData.state,
+          district: formData.district,
         },
-        body: JSON.stringify({
-          username: formData.username,
-          phone: formData.phone,
-          profilePic: formData.profilePic,
-          address: {
-            state: formData.state,
-            district: formData.district,
-          },
-        }),
       });
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        toast.error(data.message || "Failed To Update Details ");
-        return;
-      }
+      const data = response.data;
 
       setUser(data.user);
       localStorage.setItem("user", JSON.stringify(data.user));
-      toast.success("User Details Updated Successfully ");
+
+      toast.success("User Details Updated Successfully");
       setShowModal(false);
 
     } catch (error) {
       console.error(error);
-      toast.error("Server Not Reachable ");
+
+      toast.error(
+        error.response?.data?.message || "Failed To Update Details"
+      );
     }
   };
 
@@ -110,15 +104,7 @@ function SideBar() {
     formDataImage.append("image", file);
 
     try {
-      const response = await fetch("http://localhost:5000/api/image/upload", {
-        method: "POST",
-        body: formDataImage,
-      });
-
-      const data = await response.json();
-      if (!response.ok) {
-        return setError("Image Upload Failed");
-      }
+      const { data } = await API.post("/image/upload", formDataImage);
 
       setFormData((prev) => ({
         ...prev,
@@ -126,32 +112,32 @@ function SideBar() {
       }));
     } catch (error) {
       console.error(error);
-      setError("Image Upload Error");
+      setError(error.response?.data?.message || "Image Upload Failed");
     }
   };
 
   const linkStyle =
     "flex items-center gap-3 px-4 py-3 rounded-xl transition duration-200";
 
-  
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth >= 768) {
-        setOpen(true); 
+        setOpen(true);
       } else {
-        setOpen(false); 
+        setOpen(false);
       }
     };
 
     window.addEventListener("resize", handleResize);
-    handleResize(); 
+    handleResize();
 
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   return (
     <>
-      
+
       <button
         onClick={() => setOpen(!open)}
         className="fixed top-1 left-1 z-50 bg-black text-white p-2 rounded-lg md:hidden"
@@ -159,7 +145,7 @@ function SideBar() {
         <Menu size={22} />
       </button>
 
-      
+
       <div
         className={`fixed top-8 left-12 md:top-5 md:left-5 md:bottom-5 w-72 
           bg-[#0f172a] text-white border-2 border-white/20 rounded-3xl shadow-2xl 
@@ -168,7 +154,7 @@ function SideBar() {
           md:translate-x-0`}
       >
 
-        
+
         <div className="flex items-start gap-3 mb-8">
           <div className="bg-white text-white p-3 rounded-xl">
             <Ticket size={65} color="black" />
@@ -178,7 +164,7 @@ function SideBar() {
           </h1>
         </div>
 
-        
+
         <div className="relative mb-8">
           <div
             onClick={() => setShowDropdown(!showDropdown)}
@@ -244,7 +230,7 @@ function SideBar() {
           )}
         </div>
 
-       
+
         <nav className="space-y-3">
           {role === "ADMIN" && (
             <NavLink
@@ -300,7 +286,7 @@ function SideBar() {
         <nav className="space-y-3">
           {role === "USER" && (
             <>
-              
+
               <NavLink
                 to="/home"
                 end
@@ -312,7 +298,7 @@ function SideBar() {
                 <House size={20} /> Home
               </NavLink>
 
-              
+
               <NavLink
                 to="/user/wishlist"
                 className={({ isActive }) =>
@@ -324,7 +310,7 @@ function SideBar() {
               </NavLink>
 
 
-              
+
               <NavLink
                 to="/user/bookings"
                 className={({ isActive }) =>
@@ -351,12 +337,12 @@ function SideBar() {
         </nav>
       </div>
 
-    
+
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-[100]">
           <div className="bg-white text-black w-[420px] p-6 rounded-2xl shadow-2xl transform transition-all duration-300 scale-100">
             <h2 className="text-xl font-bold mb-4">Edit Profile</h2>
-           
+
             <div className="flex justify-center mb-5">
               <div className="relative group cursor-pointer">
                 <img
@@ -450,5 +436,7 @@ function SideBar() {
     </>
   );
 }
+
+
 
 export default SideBar;
