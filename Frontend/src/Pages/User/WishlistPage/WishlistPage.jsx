@@ -3,12 +3,13 @@ import API from "../../../API/Api";
 import { Heart, Calendar, MapPin } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
+import UserFooter from "../../../Components/Footer/Footer";
 
 export default function WishlistPage() {
     const [wishlistEvents, setWishlistEvents] = useState([]);
     const navigate = useNavigate();
 
-    
+
     const fetchWishlist = async () => {
         try {
             const { data } = await API.get("/wishlist");
@@ -22,7 +23,7 @@ export default function WishlistPage() {
         fetchWishlist();
     }, []);
 
-    
+
     const handleRemove = async (eventId) => {
         try {
             await API.delete(`/wishlist/remove/${eventId}`);
@@ -47,11 +48,11 @@ export default function WishlistPage() {
                             const event = wishlistItem.event;
                             return (
                                 <div
-                                    key={wishlistItem._id} 
+                                    key={wishlistItem._id}
                                     className="bg-[#1f2937] rounded-3xl overflow-hidden shadow-lg 
                  hover:shadow-2xl transition-all duration-300 flex flex-col"
                                 >
-                                    
+
                                     <div className="h-52 w-full overflow-hidden">
                                         <img
                                             src={event.image}
@@ -60,7 +61,7 @@ export default function WishlistPage() {
                                         />
                                     </div>
 
-                                    
+
                                     <div className="p-5 text-white flex flex-col flex-grow">
                                         <h4 className="font-semibold text-lg mb-2 line-clamp-2 min-h-[56px]">
                                             {event.title}
@@ -69,9 +70,9 @@ export default function WishlistPage() {
                                             {event.city} • {event.date?.slice(0, 10)}
                                         </p>
 
-                                        
+
                                         <div className="mt-auto flex gap-3">
-                                           
+
 
                                             <button
                                                 onClick={() => handleRemove(event._id)}
@@ -87,6 +88,10 @@ export default function WishlistPage() {
                         })}
                     </div>
                 )}
+
+                <div className="mt-4">
+                    <UserFooter />
+                </div>
             </div>
         </DashboardLayout>
     );

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { Heart } from "lucide-react";
 import { Calendar, Users, Ticket, IndianRupee, Clock, MapPin, Tag, TicketCheck, Armchair } from "lucide-react";
 import API from "../../../API/Api";
+import UserFooter from "../../../Components/Footer/Footer";
 import toast from "react-hot-toast";
 
 
@@ -15,8 +16,8 @@ export default function Home() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [modalEvent, setModalEvent] = useState(null); 
-  const [modalLoading, setModalLoading] = useState(false); 
+  const [modalEvent, setModalEvent] = useState(null);
+  const [modalLoading, setModalLoading] = useState(false);
   const [bookingModal, setBookingModal] = useState(false);
   const [selectedSeats, setSelectedSeats] = useState([]);
   const [quantity, setQuantity] = useState(1);
@@ -27,7 +28,7 @@ export default function Home() {
   const handleViewEvent = async (id) => {
     try {
       setModalLoading(true);
-      const res = await API.get(`/events/${id}`); 
+      const res = await API.get(`/events/${id}`);
       setModalEvent(res.data);
     } catch (err) {
       console.error(err);
@@ -55,7 +56,7 @@ export default function Home() {
 
 
 
- 
+
   useEffect(() => {
     const getEvents = async () => {
       try {
@@ -70,7 +71,7 @@ export default function Home() {
   }, []);
 
 
-  
+
   const latestThree = events.slice(0, 3);
 
   useEffect(() => {
@@ -123,11 +124,11 @@ export default function Home() {
     }
   };
 
-  
+
   const fetchWishlist = async () => {
     try {
       const { data } = await API.get("/wishlist");
-      
+
       const wishlistIds = data.map((item) => item.event._id);
       setWishlist(wishlistIds);
     } catch (err) {
@@ -146,7 +147,7 @@ export default function Home() {
     };
 
     getEvents();
-    fetchWishlist(); 
+    fetchWishlist();
   }, []);
 
   const toggleWishlist = async (eventId) => {
@@ -171,13 +172,13 @@ export default function Home() {
     <DashboardLayout>
       <div className="min-h-screen bg-white px-4 sm:px-6 md:px-8 lg:px-10 py-6">
 
-       
+
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 mb-14">
 
-       
+
           <div className="lg:col-span-7">
 
-           
+
             <div className="mb-8 w-full">
               <div className="relative">
                 <Search
@@ -194,7 +195,7 @@ export default function Home() {
               </div>
             </div>
 
-            
+
             <h3 className="text-2xl font-semibold mb-6">
               Upcoming Events
             </h3>
@@ -235,7 +236,7 @@ export default function Home() {
 
           </div>
 
-          
+
           <div className="lg:col-span-3">
             <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[9/16.5]">
 
@@ -245,10 +246,10 @@ export default function Home() {
                 className="w-full h-full object-cover"
               />
 
-              
+
               <div className="absolute inset-0 bg-black/60"></div>
 
-              
+
               <div className="absolute inset-0 flex items-end">
                 <div className="w-full p-6 text-white text-left">
 
@@ -278,14 +279,14 @@ export default function Home() {
         </div>
 
 
-       
+
         <div>
 
           <h3 className="text-2xl font-semibold mb-6">
             All Events
           </h3>
 
-          
+
           <div className="flex flex-wrap gap-3 mb-8">
             {categories.map((cat) => (
               <button
@@ -312,7 +313,7 @@ export default function Home() {
                  hover:shadow-2xl transition-all duration-300 
                  hover:-translate-y-2 flex flex-col"
               >
-               
+
                 <div className="h-52 w-full overflow-hidden">
                   <img
                     src={event.image}
@@ -321,22 +322,22 @@ export default function Home() {
                   />
                 </div>
 
-               
+
                 <div className="p-5 text-white flex flex-col flex-grow">
 
-                  
+
                   <h4 className="font-semibold text-lg leading-snug mb-2 line-clamp-2 min-h-[56px]">
                     {event.title}
                   </h4>
 
-                  
+
                   <p className="text-sm text-gray-400 mb-4">
                     {event.city} • {event.date?.slice(0, 10)}
                   </p>
 
-                  
+
                   <div className="mt-auto flex gap-3">
-                  
+
                     <button
                       onClick={() => handleViewEvent(event._id)}
                       className="flex-1 border border-white/30 text-white py-2 rounded-xl 
@@ -345,7 +346,7 @@ export default function Home() {
                       View Event Details
                     </button>
 
-                    
+
                     <button
                       onClick={() => toggleWishlist(event._id)}
                       className="w-12 h-12 flex items-center justify-center border border-white/30 
@@ -353,7 +354,7 @@ export default function Home() {
                     >
                       <Heart
                         size={23}
-                        fill={wishlist.includes(event._id) ? "red" : "none"}  
+                        fill={wishlist.includes(event._id) ? "red" : "none"}
                         stroke={wishlist.includes(event._id) ? "red" : "white"}
                       />
                     </button>
@@ -367,7 +368,7 @@ export default function Home() {
 
         </div>
 
-        
+
         {modalEvent && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm 
                 flex items-center justify-center 
@@ -389,10 +390,10 @@ export default function Home() {
                 </div>
               ) : (
                 <>
-                 
+
                   <div className="overflow-y-auto p-8 space-y-8 custom-scroll">
 
-                    
+
                     <img
                       src={modalEvent.image}
                       alt={modalEvent.title}
@@ -400,21 +401,21 @@ export default function Home() {
 
                     />
 
-                    
+
                     <h2 className="text-3xl font-bold">
                       {modalEvent.title}
                     </h2>
 
-                   
+
                     <p className="text-gray-600 leading-relaxed">
                       {modalEvent.description}
                     </p>
 
-                    
+
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
 
-                      
+
                       <div className="md:col-span-3 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -428,7 +429,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      
+
                       <div className="md:col-span-3 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -442,7 +443,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                     
+
                       <div className="md:col-span-6 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -458,10 +459,10 @@ export default function Home() {
 
                     </div>
 
-                   
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <Tag size={24} />
@@ -474,7 +475,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                   
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <IndianRupee size={24} />
@@ -487,7 +488,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                     
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <Ticket size={24} />
@@ -500,7 +501,7 @@ export default function Home() {
                         </div>
                       </div>
 
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <TicketCheck size={24} />
@@ -517,7 +518,7 @@ export default function Home() {
 
                   </div>
 
-                  
+
                   <div className="rounded-3xl p-6 flex justify-end gap-4 bg-white">
 
                     <button
@@ -545,7 +546,7 @@ export default function Home() {
             </div>
           </div>
         )}
-        
+
         {bookingModal && modalEvent && (
           <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50 lg:pl-[120px]">
 
@@ -555,14 +556,14 @@ export default function Home() {
 
                 <h2 className="text-3xl font-bold">Confirm Your Tickets</h2>
 
-                
+
                 {!modalEvent.seatArrangement && (
                   <div className="bg-white p-6  space-y-4">
                     <p className="text-gray-700">
                       This event currently does not have a designated seating arrangement.Should there be any updates regarding seat allocation, the event coordinator will provide the necessary information at the venue.
                     </p>
 
-                  
+
                     <div className="flex items-center gap-6">
                       <h1>Select Ticket Count</h1>
                       <button
@@ -584,17 +585,17 @@ export default function Home() {
                   </div>
                 )}
 
-                
+
                 {modalEvent.seatArrangement && (
                   <>
-                  
+
                     <div className="text-center">
                       <div className="bg-black text-white py-3 rounded-xl mb-6">
                         STAGE
                       </div>
                     </div>
 
-                   
+
                     <div className="space-y-4">
                       {Object.entries(
                         modalEvent.seats.reduce((acc, seat) => {
@@ -653,10 +654,10 @@ export default function Home() {
                   </>
                 )}
 
-               
+
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
 
-                  
+
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                     <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                       <Ticket size={24} />
@@ -669,7 +670,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                
+
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                     <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                       <TicketCheck size={24} />
@@ -684,7 +685,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  
+
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                     <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                       <IndianRupee size={24} />
@@ -701,7 +702,7 @@ export default function Home() {
 
                 </div>
 
-               
+
                 {modalEvent.seatArrangement && (
                   <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm mt-4">
                     <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -723,7 +724,7 @@ export default function Home() {
 
               </div>
 
-             
+
               <div className="p-6 flex justify-end gap-4 bg-white rounded-3xl">
 
                 <button
@@ -737,7 +738,7 @@ export default function Home() {
                   Cancel
                 </button>
 
-                
+
 
                 <button
                   onClick={async () => {
@@ -766,7 +767,7 @@ export default function Home() {
                         }
                       );
 
-                     
+
                       window.location.href = data.url;
 
                     } catch (err) {
@@ -784,6 +785,10 @@ export default function Home() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <UserFooter />
+        </div>
 
 
 

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import API from "../../../API/Api";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
 import CountUp from "react-countup";
+import AdminFooter from "../../../Components/Footer/AdminFooter";
 import {
     BarChart,
     Bar,
@@ -101,10 +102,10 @@ export default function AdminDashboard() {
 
                 <h1 className="text-3xl font-bold mb-6">Dashboard</h1>
 
-               
+
                 <div className="bg-[#1f2937] text-white p-8 rounded-3xl shadow-2xl space-y-8 mb-6">
 
-                    
+
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
 
                         <div>
@@ -121,7 +122,7 @@ export default function AdminDashboard() {
 
                     </div>
 
-                   
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
 
                         <DarkCard
@@ -155,7 +156,7 @@ export default function AdminDashboard() {
 
                     </div>
 
-                    
+
                     <div className="space-y-4">
 
                         <div>
@@ -195,10 +196,10 @@ export default function AdminDashboard() {
 
                 </div>
 
-                
+
                 <div className="bg-[#1f2937] text-white p-8 rounded-3xl shadow-xl space-y-8 mb-6">
 
-                    
+
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
 
                         <div>
@@ -211,7 +212,7 @@ export default function AdminDashboard() {
                             </p>
                         </div>
 
-                       
+
                         <div
                             className={`text-sm font-semibold px-4 py-2 rounded-full w-fit
             ${monthPercentageChange >= 0
@@ -224,7 +225,7 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    
+
                     <div className="flex justify-end">
                         <select
                             value={selectedMonth}
@@ -239,21 +240,21 @@ export default function AdminDashboard() {
                         </select>
                     </div>
 
-                   
+
                     <div className="flex flex-col lg:flex-row gap-8">
 
-                      
+
                         <div className="w-full lg:w-[70%] h-72 min-w-0">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={analytics.dailyChart || []}>
                                     <CartesianGrid
                                         strokeDasharray="3 3"
-                                        stroke="#374151"  
+                                        stroke="#374151"
                                     />
 
                                     <XAxis
                                         dataKey="day"
-                                        stroke="#ffffff"  
+                                        stroke="#ffffff"
                                         tick={{ fill: "#ffffff" }}
                                     />
 
@@ -265,10 +266,10 @@ export default function AdminDashboard() {
                                     <Tooltip
                                         contentStyle={{
                                             backgroundColor: "#000000",
-                                            border: "none",          
+                                            border: "none",
                                             borderRadius: "10px",
                                             color: "#ffffff",
-                                            boxShadow: "0 4px 20px rgba(0,0,0,0.6)" 
+                                            boxShadow: "0 4px 20px rgba(0,0,0,0.6)"
                                         }}
                                         labelStyle={{ color: "#ffffff" }}
                                         itemStyle={{ color: "#ffffff" }}
@@ -277,7 +278,7 @@ export default function AdminDashboard() {
                                     <Line
                                         type="monotone"
                                         dataKey="revenue"
-                                        stroke="#ffffff"     
+                                        stroke="#ffffff"
                                         strokeWidth={2.5}
                                         isAnimationActive={true}
                                         animationDuration={1200}
@@ -296,7 +297,7 @@ export default function AdminDashboard() {
                             </ResponsiveContainer>
                         </div>
 
-                        
+
                         <div className="lg:w-[30%] flex flex-col gap-6">
 
                             <div className="relative p-6 rounded-2xl backdrop-blur-xl bg-gradient-to-br from-black/60 via-emerald-900/30 to-emerald-500/20 hover:from-black/70 hover:via-emerald-800/40 hover:to-emerald-400/30 transition duration-300 shadow-lg">
@@ -336,10 +337,10 @@ export default function AdminDashboard() {
 
                 </div>
 
-                
+
                 <div className="bg-[#1f2937] text-white p-8 rounded-3xl shadow-xl space-y-8 mb-6">
 
-                    
+
                     <div className="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-4">
 
                         <div>
@@ -355,7 +356,7 @@ export default function AdminDashboard() {
                             </p>
                         </div>
 
-                       
+
                         <div
                             className={`text-sm font-semibold px-6 py-2 rounded-full 
     whitespace-nowrap inline-flex items-center justify-center
@@ -370,7 +371,7 @@ export default function AdminDashboard() {
                         </div>
                     </div>
 
-                    
+
                     <div className="flex flex-col sm:flex-row sm:justify-end gap-3 w-full">
                         <select
                             value={selectedMonth}
@@ -405,10 +406,10 @@ export default function AdminDashboard() {
                         </select>
                     </div>
 
-                   
+
                     <div className="flex flex-col lg:flex-row gap-8">
 
-                        
+
                         <div className="w-full lg:w-[70%] h-72 min-w-0">
                             <ResponsiveContainer width="100%" height="100%">
                                 <LineChart data={analytics.weeklyDailyChart || []}>
@@ -463,10 +464,10 @@ export default function AdminDashboard() {
                             </ResponsiveContainer>
                         </div>
 
-                        
+
                         <div className="lg:w-[30%] flex flex-col gap-6">
 
-                            
+
                             <div className="relative p-6 rounded-2xl backdrop-blur-xl 
                 bg-gradient-to-br from-black/60 via-emerald-900/30 to-emerald-500/20
                 hover:from-black/70 hover:via-emerald-800/40 hover:to-emerald-400/30
@@ -487,7 +488,7 @@ export default function AdminDashboard() {
                                 </h2>
                             </div>
 
-                           
+
                             <div className="relative p-6 rounded-2xl backdrop-blur-xl 
                 bg-gradient-to-br from-black/60 via-yellow-900/30 to-yellow-500/20
                 hover:from-black/70 hover:via-yellow-800/40 hover:to-yellow-400/30
@@ -511,6 +512,10 @@ export default function AdminDashboard() {
 
                     </div>
 
+                </div>
+
+                <div className="mt-4">
+                    <AdminFooter />
                 </div>
 
             </div>

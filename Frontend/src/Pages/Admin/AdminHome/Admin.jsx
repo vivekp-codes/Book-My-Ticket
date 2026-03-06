@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
 import { useNavigate } from "react-router-dom";
 import { Calendar, Users, Ticket, IndianRupee, Clock, MapPin, Tag, TicketCheck } from "lucide-react";
+import AdminFooter from "../../../Components/Footer/AdminFooter";
 import API from "../../../API/Api";
 
 
@@ -13,7 +14,7 @@ export default function AdminHome() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState("All");
-  const [modalEvent, setModalEvent] = useState(null); 
+  const [modalEvent, setModalEvent] = useState(null);
   const [modalLoading, setModalLoading] = useState(false);
 
   const [stats, setStats] = useState({
@@ -27,7 +28,7 @@ export default function AdminHome() {
   const handleViewEvent = async (id) => {
     try {
       setModalLoading(true);
-      const res = await API.get(`/events/${id}`); 
+      const res = await API.get(`/events/${id}`);
       setModalEvent(res.data);
     } catch (err) {
       console.error(err);
@@ -61,8 +62,8 @@ export default function AdminHome() {
 
 
 
-  
-   useEffect(() => {
+
+  useEffect(() => {
     const getEvents = async () => {
       try {
         const res = await API.get("/events");
@@ -75,7 +76,7 @@ export default function AdminHome() {
     getEvents();
   }, []);
 
- 
+
   const latestThree = events.slice(0, 3);
 
   useEffect(() => {
@@ -107,13 +108,13 @@ export default function AdminHome() {
     <DashboardLayout>
       <div className="min-h-screen bg-white px-4 sm:px-6 md:px-8 lg:px-10 py-6">
 
-        
+
         <div className="grid grid-cols-1 lg:grid-cols-10 gap-8 mb-14">
 
-         
+
           <div className="lg:col-span-7">
 
-            
+
             <div className="mb-8 w-full">
               <div className="relative">
                 <Search
@@ -130,7 +131,7 @@ export default function AdminHome() {
               </div>
             </div>
 
-            
+
             <h3 className="text-2xl font-semibold mb-6">
               Upcoming Events
             </h3>
@@ -171,7 +172,7 @@ export default function AdminHome() {
 
           </div>
 
-          
+
           <div className="lg:col-span-3">
             <div className="relative rounded-2xl overflow-hidden shadow-xl aspect-[9/16.5]">
 
@@ -181,10 +182,10 @@ export default function AdminHome() {
                 className="w-full h-full object-cover"
               />
 
-              
+
               <div className="absolute inset-0 bg-black/60"></div>
 
-             
+
               <div className="absolute inset-0 flex items-end">
                 <div className="w-full p-6 text-white text-left">
 
@@ -213,7 +214,7 @@ export default function AdminHome() {
         </div>
 
 
-        
+
         <div>
 
 
@@ -221,7 +222,7 @@ export default function AdminHome() {
             All Events
           </h3>
 
-          
+
           <div className="flex flex-wrap gap-3 mb-8">
             {categories.map((cat) => (
               <button
@@ -248,7 +249,7 @@ export default function AdminHome() {
                  hover:shadow-2xl transition-all duration-300 
                  hover:-translate-y-2 flex flex-col"
               >
-               
+
                 <div className="h-52 w-full overflow-hidden">
                   <img
                     src={event.image}
@@ -257,20 +258,20 @@ export default function AdminHome() {
                   />
                 </div>
 
-              
+
                 <div className="p-5 text-white flex flex-col flex-grow">
 
-                 
+
                   <h4 className="font-semibold text-lg leading-snug mb-2 line-clamp-2 min-h-[56px]">
                     {event.title}
                   </h4>
 
-                  
+
                   <p className="text-sm text-gray-400 mb-4">
                     {event.city} • {event.date?.slice(0, 10)}
                   </p>
 
-                  
+
                   <div className="mt-auto">
                     <button
                       onClick={() => handleViewEvent(event._id)}
@@ -290,7 +291,7 @@ export default function AdminHome() {
 
         </div>
 
-        
+
         {modalEvent && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm 
                 flex items-center justify-center 
@@ -312,10 +313,10 @@ export default function AdminHome() {
                 </div>
               ) : (
                 <>
-                 
+
                   <div className="overflow-y-auto p-8 space-y-8 custom-scroll">
 
-                    
+
                     <img
                       src={modalEvent.image}
                       alt={modalEvent.title}
@@ -323,21 +324,21 @@ export default function AdminHome() {
 
                     />
 
-                  
+
                     <h2 className="text-3xl font-bold">
                       {modalEvent.title}
                     </h2>
 
-                    
+
                     <p className="text-gray-600 leading-relaxed">
                       {modalEvent.description}
                     </p>
 
-                   
+
                     <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
 
 
-                      
+
                       <div className="md:col-span-3 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -351,7 +352,7 @@ export default function AdminHome() {
                         </div>
                       </div>
 
-                      
+
                       <div className="md:col-span-3 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -365,7 +366,7 @@ export default function AdminHome() {
                         </div>
                       </div>
 
-                      
+
                       <div className="md:col-span-6 flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
 
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
@@ -381,10 +382,10 @@ export default function AdminHome() {
 
                     </div>
 
-                   
+
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
 
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <Tag size={24} />
@@ -397,7 +398,7 @@ export default function AdminHome() {
                         </div>
                       </div>
 
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <IndianRupee size={24} />
@@ -410,7 +411,7 @@ export default function AdminHome() {
                         </div>
                       </div>
 
-                      
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <Ticket size={24} />
@@ -423,7 +424,7 @@ export default function AdminHome() {
                         </div>
                       </div>
 
-                   
+
                       <div className="flex items-center gap-4 p-4 bg-gray-50 rounded-2xl shadow-sm">
                         <div className="w-14 h-14 flex items-center justify-center bg-black text-white rounded-2xl">
                           <TicketCheck size={24} />
@@ -440,7 +441,7 @@ export default function AdminHome() {
 
                   </div>
 
-                  
+
                   <div className="rounded-3xl p-6 flex justify-end gap-4 bg-white">
 
                     <button
@@ -456,6 +457,10 @@ export default function AdminHome() {
             </div>
           </div>
         )}
+
+        <div className="mt-4">
+          <AdminFooter />
+        </div>
 
 
 

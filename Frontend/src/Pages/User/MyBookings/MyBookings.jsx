@@ -4,6 +4,7 @@ import API from "../../../API/Api";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
 import { toPng } from "html-to-image";
 import download from "downloadjs";
+import UserFooter from "../../../Components/Footer/Footer";
 import { useNavigate } from "react-router-dom";
 
 export default function MyBookings() {
@@ -149,6 +150,10 @@ export default function MyBookings() {
                         ))}
                     </div>
                 )}
+
+                <div className="mt-4">
+                    <UserFooter />
+                </div>
             </div>
         </DashboardLayout>
     );

@@ -3,6 +3,7 @@ import DashboardLayout from "../../../Layouts/DashboardLayout";
 import API from "../../../API/Api";
 import { Ticket, IndianRupee } from "lucide-react";
 import { Dialog } from "@headlessui/react";
+import UserFooter from "../../../Components/Footer/Footer";
 import {
     LineChart,
     Line,
@@ -366,6 +367,9 @@ export default function PurchasesPage() {
                         </Dialog.Panel>
                     </div>
                 </Dialog>
+                <div className="mt-4">
+                    <UserFooter />
+                </div>
             </div>
         </DashboardLayout>
     );

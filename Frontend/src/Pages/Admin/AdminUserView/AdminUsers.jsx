@@ -3,6 +3,7 @@ import { Search } from "lucide-react";
 import API from "../../../API/Api";
 import toast from "react-hot-toast";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
+import AdminFooter from "../../../Components/Footer/AdminFooter";
 
 
 
@@ -393,6 +394,10 @@ export default function AdminUsers() {
                         </div>
                     </div>
                 )}
+
+                <div className="mt-4">
+                    <AdminFooter />
+                </div>
 
             </div>
         </DashboardLayout>

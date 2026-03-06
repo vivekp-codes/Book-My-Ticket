@@ -3,6 +3,7 @@ import API from "../../../API/Api";
 import toast from "react-hot-toast";
 import { AlertTriangle } from "lucide-react";
 import DashboardLayout from "../../../Layouts/DashboardLayout";
+import AdminFooter from "../../../Components/Footer/AdminFooter";
 
 
 export default function AdminEvents() {
@@ -846,6 +847,10 @@ export default function AdminEvents() {
                         </div>
                     </div>
                 )}
+
+                <div className="mt-4">
+                    <AdminFooter />
+                </div>
 
 
 
