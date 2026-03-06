@@ -104,7 +104,11 @@ function SideBar() {
     formDataImage.append("image", file);
 
     try {
-      const { data } = await API.post("/image/upload", formDataImage);
+      const { data } = await API.post("/image/upload", formDataImage, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
 
       setFormData((prev) => ({
         ...prev,
