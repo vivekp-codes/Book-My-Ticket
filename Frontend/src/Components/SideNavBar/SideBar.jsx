@@ -148,7 +148,7 @@ function SideBar() {
 
       <div
         className={`fixed top-8 left-12 md:top-5 md:left-5 md:bottom-5 w-72 
-          bg-[#0f172a] text-white border-2 border-white/20 rounded-3xl shadow-2xl 
+          bg-black text-white border-2 border-white/20 rounded-3xl shadow-2xl 
           p-6 z-50 transition-transform duration-300
           ${open ? "translate-x-0" : "-translate-x-[120%]"} 
           md:translate-x-0`}
