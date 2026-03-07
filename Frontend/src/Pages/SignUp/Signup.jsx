@@ -7,6 +7,7 @@ import API from "../../API/Api";
 
 const Signup = () => {
     const navigate = useNavigate();
+    const [loading, setLoading] = useState(false);
 
     const [form, setForm] = useState({
         username: "",
@@ -24,43 +25,44 @@ const Signup = () => {
 
         const { username, email, password, confirmPassword } = form;
 
-        
         if (!username || !email || !password || !confirmPassword) {
             toast.error("Please Fill All Required Fields");
             return;
         }
 
-       
         if (password.length < 6) {
             toast.error("Password Must Be At Least 6 Characters");
             return;
         }
 
-       
         if (password !== confirmPassword) {
             toast.error("Passwords Do Not Match");
             return;
         }
 
-       
         try {
+            setLoading(true);
+
             await API.post("/user/signup", form);
+
             toast.success("Signup Successful !");
+
             setTimeout(() => navigate("/login"), 1500);
+
         } catch (err) {
             toast.error(err.response?.data?.message || "Signup Failed");
+            setLoading(false);
         }
     };
 
-
     return (
-       
+
         <div className="w-screen h-screen flex overflow-hidden">
 
-            
+
             <div className=" w-full md:w-1/2 bg-white px-10 flex flex-col justify-center md:ml-[150px] ">
 
-               
+
                 <div className="flex items-start gap-3 mb-8">
                     <div className="bg-black text-white p-3 rounded-xl">
                         <Ticket size={65} />
@@ -77,7 +79,7 @@ const Signup = () => {
                     Start booking events, shows and experiences in seconds.
                 </p>
 
-                
+
                 <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
 
                     <input
@@ -130,9 +132,14 @@ const Signup = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition"
+                        disabled={loading}
+                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition flex justify-center items-center"
                     >
-                        Sign Up
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                            "Sign Up"
+                        )}
                     </button>
 
                 </form>
@@ -149,7 +156,7 @@ const Signup = () => {
                 </p>
             </div>
 
-            
+
             <div className="hidden md:block w-[1000px] relative bg-black">
                 <video
                     src="/Video/Coverpage.mp4"

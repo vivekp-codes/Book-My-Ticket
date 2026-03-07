@@ -14,6 +14,8 @@ const ChangePassword = () => {
         confirmPassword: "",
     });
 
+    const [loading, setLoading] = useState(false);
+
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
@@ -40,6 +42,8 @@ const ChangePassword = () => {
 
         try {
 
+            setLoading(true);
+
             await API.patch("/user/reset-password", form);
 
             toast.success("Password Changed Successfully");
@@ -50,13 +54,14 @@ const ChangePassword = () => {
 
         } catch (err) {
             toast.error(err.response?.data?.message || "Password Reset Failed");
+            setLoading(false);
         }
     };
 
     return (
         <div className="login-main w-screen h-screen flex overflow-hidden">
 
-           
+
             <div className="hidden md:block w-1/2 relative bg-black w-[1000px]">
                 <video
                     src="/Video/Coverpage.mp4"
@@ -69,10 +74,10 @@ const ChangePassword = () => {
                 <div className="absolute inset-0 bg-black/30" />
             </div>
 
-            
+
             <div className="w-full md:w-1/2 bg-white px-10 flex flex-col justify-center md:mr-[150px]">
 
-                
+
                 <div className="flex items-start gap-3 mb-8 md:ml-[100px]">
                     <div className="bg-black text-white p-3 rounded-xl">
                         <Ticket size={65} />
@@ -82,7 +87,7 @@ const ChangePassword = () => {
                     </h1>
                 </div>
 
-               
+
                 <h2 className="text-2xl font-semibold mb-2 md:ml-[100px]">
                     Reset Password
                 </h2>
@@ -91,7 +96,7 @@ const ChangePassword = () => {
                     Enter your email and new password to reset your account password.
                 </p>
 
-                
+
                 <form
                     onSubmit={handleSubmit}
                     className="space-y-4 max-w-md md:ml-[100px]"
@@ -136,9 +141,14 @@ const ChangePassword = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition"
+                        disabled={loading}
+                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition flex justify-center items-center"
                     >
-                        Change Password
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                            "Change Password"
+                        )}
                     </button>
 
                 </form>

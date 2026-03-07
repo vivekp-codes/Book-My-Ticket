@@ -15,6 +15,7 @@ const Login = () => {
         email: "",
         password: "",
     });
+    const [loading, setLoading] = useState(false);
 
     const handleChange = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
@@ -25,25 +26,23 @@ const Login = () => {
 
         const { email, password } = form;
 
-        
         if (!email || !password) {
             toast.error("Please Enter Email And Password");
             return;
         }
 
-        
         if (password.length < 6) {
             toast.error("Password Must Be At Least 6 Characters");
             return;
         }
 
         try {
+            setLoading(true);
+
             const res = await API.post("/user/login", form);
 
             const { token, user } = res.data;
             login(user, token);
-
-
 
             if (user.role === "ADMIN") {
                 toast.success("Admin Login Successful !");
@@ -52,21 +51,23 @@ const Login = () => {
             }
 
             setTimeout(() => {
-                if (res.data.user.role === "ADMIN") {
+                if (user.role === "ADMIN") {
                     navigate("/admin");
                 } else {
                     navigate("/home");
                 }
             }, 1200);
+
         } catch (err) {
             toast.error(err.response?.data?.message || "Login Failed");
+            setLoading(false);
         }
     };
 
     return (
         <div className=" login-main w-screen h-screen flex overflow-hidden">
 
-            
+
             <div className="hidden md:block w-1/2 relative bg-black w-[1000px]">
                 <video
                     src="/Video/Coverpage.mp4"
@@ -79,10 +80,10 @@ const Login = () => {
                 <div className="absolute inset-0 bg-black/30" />
             </div>
 
-           
+
             <div className="w-full md:w-1/2 bg-white px-10 flex flex-col justify-center md:mr-[150px] ">
 
-                
+
                 <div className="flex items-start gap-3 mb-8 md:ml-[100px]">
                     <div className="bg-black text-white p-3 rounded-xl">
                         <Ticket size={65} />
@@ -99,7 +100,7 @@ const Login = () => {
                     Login to continue booking your favorite events.
                 </p>
 
-                
+
                 <form onSubmit={handleSubmit} className="space-y-4 max-w-md md:ml-[100px]">
 
                     <input
@@ -138,9 +139,14 @@ const Login = () => {
 
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition"
+                        disabled={loading}
+                        className="w-full bg-black text-white py-2.5 rounded-lg hover:bg-gray-800 transition flex justify-center items-center"
                     >
-                        Login
+                        {loading ? (
+                            <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                            "Login"
+                        )}
                     </button>
 
                 </form>
