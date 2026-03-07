@@ -31,10 +31,6 @@ app.use(
 
 app.use(express.json());
 
-app.use(
-  '/img',
-  express.static(path.join(__dirname, 'Public/Image'))
-);
 
 
 
