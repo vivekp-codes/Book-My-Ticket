@@ -3,6 +3,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../DataBase/Models/UserSchema');
 const CheckToken = require('../DataBase/MiddleWare/CheckToken');
+const upload = require('../DataBase/MiddleWare/Upload');
 
 const router = express.Router();
 
@@ -62,10 +63,10 @@ router.post('/login', async (req, res) => {
     let user;
     let isAdmin = false;
 
-    
+
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       user = {
-        _id: 'ADMIN_ID', 
+        _id: 'ADMIN_ID',
         username: 'Admin',
         email: process.env.ADMIN_EMAIL,
         role: 'ADMIN',
@@ -74,7 +75,7 @@ router.post('/login', async (req, res) => {
       };
       isAdmin = true;
     } else {
-      
+
       user = await User.findOne({ email });
       if (!user) {
         return res.status(400).json({ message: 'Invalid email or password' });
@@ -107,46 +108,38 @@ router.post('/login', async (req, res) => {
 router.patch(
   '/profile',
   CheckToken(['USER', 'ADMIN']),
+  upload.single('profilePic'),
   async (req, res) => {
     try {
       const userId = req.user.id;
-      const { username, phone, address, profilePic, password } = req.body;
-
+      const { username, phone, address, password } = req.body;
       const updateData = {};
 
-      if (username !== undefined) updateData.username = username;
-      if (phone !== undefined) updateData.phone = phone;
-      if (profilePic !== undefined) updateData.profilePic = profilePic;
+      if (username) updateData.username = username;
+      if (phone) updateData.phone = phone;
+      if (req.file && req.file.path) updateData.profilePic = req.file.path;
 
-      if (address !== undefined) {
+      if (address) {
         const existingUser = await User.findById(userId);
-
         updateData.address = {
           state: address.state ?? existingUser.address.state,
-          district: address.district ?? existingUser.address.district
+          district: address.district ?? existingUser.address.district,
         };
       }
 
-
       if (password) {
-        if (password.length < 6) {
-          return res.status(400).json({ message: 'Password must be at least 6 characters' });
-        }
+        if (password.length < 6) return res.status(400).json({ message: 'Password must be at least 6 chars' });
         updateData.password = await bcrypt.hash(password, 10);
       }
 
-      const updatedUser = await User.findByIdAndUpdate(
-        userId,
-        updateData,
-        { new: true, runValidators: true }
-      ).select('-password');
+      const updatedUser = await User.findByIdAndUpdate(userId, updateData, {
+        new: true,
+        runValidators: true,
+      }).select('-password');
 
-      res.status(200).json({
-        message: 'Profile updated',
-        user: updatedUser
-      });
-    } catch (e) {
-      res.status(500).json({ message: e.message });
+      res.status(200).json({ message: 'Profile updated successfully', user: updatedUser });
+    } catch (err) {
+      res.status(500).json({ message: err.message });
     }
   }
 );
@@ -156,12 +149,12 @@ router.patch(
 
 router.get(
   "/all-users",
-  CheckToken(["ADMIN"]), 
+  CheckToken(["ADMIN"]),
   async (req, res) => {
     try {
       const users = await User.find({ role: { $ne: "ADMIN" } })
-        .select("-password")   
-        .sort({ createdAt: -1 }); 
+        .select("-password")
+        .sort({ createdAt: -1 });
 
       res.status(200).json(users);
     } catch (error) {

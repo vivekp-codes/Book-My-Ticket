@@ -2,140 +2,120 @@ const express = require("express");
 const router = express.Router();
 const Event = require("../DataBase/Models/EventSchema");
 const CheckToken = require("../DataBase/MiddleWare/CheckToken");
+const upload = require('../DataBase/MiddleWare/Upload');
 
 
 const allowedCategories = ["Concert", "Workshop", "Race", "Seminar", "Festival"];
 
-router.post("/create", CheckToken(["ADMIN"]), async (req, res) => {
-  try {
-    const {
-      title,
-      description,
-      category,
-      venue,
-      city,
-      date,
-      time,
-      price,
-      image,
-      seatArrangement,
-      layoutType,
-      rows,
-      cols,
-      circles,
-      seatsPerCircle,
-      totalTickets
-    } = req.body;
+router.post(
+  "/create",
+  CheckToken(["ADMIN"]),
+  upload.single("image"), // Accept a single file with field name 'image'
+  async (req, res) => {
+    try {
+      const {
+        title,
+        description,
+        category,
+        venue,
+        city,
+        date,
+        time,
+        price,
+        seatArrangement,
+        layoutType,
+        rows,
+        cols,
+        circles,
+        seatsPerCircle,
+        totalTickets
+      } = req.body;
 
-    
-    if (!title || !description || !category || !venue || !city || !date || !time || price === undefined) {
-      return res.status(400).json({ message: "Required fields missing" });
-    }
+      // Validation
+      if (!title || !description || !category || !venue || !city || !date || !time || price === undefined) {
+        return res.status(400).json({ message: "Required fields missing" });
+      }
 
-    if (!allowedCategories.includes(category)) {
-      return res.status(400).json({
-        message: `Invalid category. Allowed: ${allowedCategories.join(", ")}`
+      if (!allowedCategories.includes(category)) {
+        return res.status(400).json({
+          message: `Invalid category. Allowed: ${allowedCategories.join(", ")}`
+        });
+      }
+
+      // Handle uploaded image
+      let imageUrl = null;
+      if (req.file && req.file.path) {
+        imageUrl = req.file.path; // Cloudinary URL
+      }
+
+      // Seat arrangement
+      let seats = [];
+      let totalSeats = 0;
+      const isSeatEnabled = seatArrangement === true || seatArrangement === "true";
+
+      if (isSeatEnabled) {
+        if (layoutType === "grid") {
+          if (!rows || !cols) return res.status(400).json({ message: "Rows and columns required for grid layout" });
+          const parsedRows = parseInt(rows);
+          const parsedCols = parseInt(cols);
+          totalSeats = parsedRows * parsedCols;
+
+          for (let i = 0; i < parsedRows; i++) {
+            const rowLetter = String.fromCharCode(65 + i);
+            for (let j = 1; j <= parsedCols; j++) {
+              seats.push({ seatNumber: `${rowLetter}${j}`, isBooked: false });
+            }
+          }
+        }
+
+        if (layoutType === "round") {
+          if (!circles || !seatsPerCircle) return res.status(400).json({ message: "Circles and seatsPerCircle required for round layout" });
+          let seatsArray = [];
+          try {
+            seatsArray = JSON.parse(seatsPerCircle);
+          } catch {
+            return res.status(400).json({ message: "Invalid seatsPerCircle format" });
+          }
+
+          totalSeats = seatsArray.reduce((sum, num) => sum + parseInt(num), 0);
+
+          for (let c = 1; c <= parseInt(circles); c++) {
+            for (let s = 1; s <= parseInt(seatsArray[c - 1]); s++) {
+              seats.push({ seatNumber: `C${c}-${s}`, isBooked: false });
+            }
+          }
+        }
+      }
+
+      // Create event
+      const event = new Event({
+        title,
+        description,
+        category,
+        venue,
+        city,
+        date,
+        time,
+        price,
+        image: imageUrl, // use uploaded Cloudinary image
+        seatArrangement: isSeatEnabled,
+        layoutType: isSeatEnabled ? layoutType : null,
+        totalTickets: isSeatEnabled ? totalSeats : parseInt(totalTickets) || 0,
+        seats
       });
+
+      await event.save();
+
+      res.status(201).json({
+        message: "Event Created Successfully",
+        event
+      });
+
+    } catch (err) {
+      res.status(500).json({ error: err.message });
     }
-
-    let seats = [];
-    let totalSeats = 0;
-    const isSeatEnabled = seatArrangement === true || seatArrangement === "true";
-
-   
-    if (isSeatEnabled) {
-
-      
-      if (layoutType === "grid") {
-
-        if (!rows || !cols) {
-          return res.status(400).json({
-            message: "Rows and columns required for grid layout"
-          });
-        }
-
-        const parsedRows = parseInt(rows);
-        const parsedCols = parseInt(cols);
-
-        totalSeats = parsedRows * parsedCols;
-
-        for (let i = 0; i < parsedRows; i++) {
-          const rowLetter = String.fromCharCode(65 + i);
-
-          for (let j = 1; j <= parsedCols; j++) {
-            seats.push({
-              seatNumber: `${rowLetter}${j}`,
-              isBooked: false
-            });
-          }
-        }
-      }
-
-     
-      if (layoutType === "round") {
-
-        if (!circles || !seatsPerCircle) {
-          return res.status(400).json({
-            message: "Circles and seatsPerCircle required for round layout"
-          });
-        }
-
-        let seatsArray = [];
-
-        try {
-          seatsArray = JSON.parse(seatsPerCircle);
-        } catch {
-          return res.status(400).json({
-            message: "Invalid seatsPerCircle format"
-          });
-        }
-
-        totalSeats = seatsArray.reduce(
-          (sum, num) => sum + parseInt(num),
-          0
-        );
-
-        for (let c = 1; c <= parseInt(circles); c++) {
-          for (let s = 1; s <= parseInt(seatsArray[c - 1]); s++) {
-            seats.push({
-              seatNumber: `C${c}-${s}`,
-              isBooked: false
-            });
-          }
-        }
-      }
-    }
-
- 
-    const event = new Event({
-      title,
-      description,
-      category,
-      venue,
-      city,
-      date,
-      time,
-      price,
-      image: image || null,
-      seatArrangement: isSeatEnabled,
-      layoutType: isSeatEnabled ? layoutType : null,
-      totalTickets: isSeatEnabled
-        ? totalSeats
-        : parseInt(totalTickets) || 0,
-      seats
-    });
-
-    await event.save();
-
-    res.status(201).json({
-      message: "Event Created Successfully",
-      event
-    });
-
-  } catch (err) {
-    res.status(500).json({ error: err.message });
   }
-});
+);
 
 
 
